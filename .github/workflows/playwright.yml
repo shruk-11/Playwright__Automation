@@ -28,7 +28,7 @@ jobs:
     - name: Notify n8n
       if: always()
       run: |
-        curl -X POST https://shrutikumari.app.n8n.cloud/webhook/playwright \
+        curl -X POST https://shrutikumari.app.n8n.cloud/webhook-test/run-tests \
           -H "Content-Type: application/json" \
           -d '{
             "repository":"${{ github.repository }}",
