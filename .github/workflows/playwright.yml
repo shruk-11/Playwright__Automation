@@ -25,3 +25,13 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+    - name: Notify n8n
+      if: always()
+      run: |
+        curl -X POST https://shrutikumari.app.n8n.cloud/webhook/playwright \
+          -H "Content-Type: application/json" \
+          -d '{
+            "repository":"${{ github.repository }}",
+            "status":"${{ job.status }}",
+            "branch":"${{ github.ref_name }}"
+          }'
