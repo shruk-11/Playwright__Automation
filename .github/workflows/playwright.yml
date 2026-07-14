@@ -30,8 +30,8 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |        # 1. Fetch the logs for this specific run and get the last 100 lines
-        gh run view ${{ github.run_id }} --log | tail -n 100 > log_tail.txt
-
+        gh run view ${{ github.run_id }} --log | tail -n 500 > log_tail.txt
+        cat log_tail.txt
         # 2. Use jq to safely construct your complete JSON payload
         # This automatically escapes quotes and newlines in your log file
         JSON_PAYLOAD=$(jq -n \
