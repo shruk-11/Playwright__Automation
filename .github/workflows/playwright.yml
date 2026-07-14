@@ -31,7 +31,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |        # 1. Fetch the logs for this specific run and get the last 100 lines
         sudo journalctl -u runner-worker.service -n 500 > log_tail.txt
-        cat log_tail.txt
+        cat /home/runner/work/Playwright__Automation/Playwright__Automation/tests/test-results/tests-UIBasicstest-Browser-Context-Playwright-test/error-context.md
         # 2. Use jq to safely construct your complete JSON payload
         # This automatically escapes quotes and newlines in your log file
         JSON_PAYLOAD=$(jq -n \
