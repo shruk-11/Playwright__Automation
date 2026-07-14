@@ -27,11 +27,28 @@ jobs:
         retention-days: 30
     - name: Notify n8n
       if: always()
-      run: |
-        curl -X POST https://shrutievirontestflow01.app.n8n.cloud/webhook-test/playwright-test \
-          -H "Content-Type: application/json" \
-          -d '{
-            "repository":"${{ github.repository }}",
-            "status":"${{ job.status }}",
-            "branch":"${{ github.ref_name }}"
-          }'
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |        # 1. Fetch the logs for this specific run and get the last 100 lines
+        gh run view ${{ github.run_id }} --log | tail -n 100 > log_tail.txt
+
+        # 2. Use jq to safely construct your complete JSON payload
+        # This automatically escapes quotes and newlines in your log file
+        JSON_PAYLOAD=$(jq -n \
+          --arg repo "${{ github.repository }}" \
+          --arg status "${{ job.status }}" \
+          --arg run_id "${{ github.run_id }}" \
+          --arg branch "${{ github.ref_name }}" \
+          --rawfile log_data log_tail.txt \
+          '{
+            repository: $repo,
+            status: $status,
+            run_id: $run_id,
+            branch: $branch,
+            playWrightLogs: $log_data
+          }')
+
+        # 3. Send the JSON payload to your webhook
+        curl -X POST -H "Content-Type: application/json" \
+          -d "$JSON_PAYLOAD" \
+          https://shrutievirontestflow01.app.n8n.cloud/webhook-test/playwright-test
