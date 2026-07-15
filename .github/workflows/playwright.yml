@@ -31,9 +31,9 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |        # 1. Fetch the logs for this specific run and get the last 100 lines
-        sudo journalctl -u runner-worker.service -n 500 > error-context.md
+        # sudo journalctl -u runner-worker.service -n 500 > error-context.md
         ERROR_FILE=$(find test-results -name "error-context.md" | head -1)
-        cat "$ERROR_FILE"
+        # cat "$ERROR_FILE"
         
 
         # 2. Use jq to safely construct your complete JSON payload
@@ -43,7 +43,7 @@ jobs:
           --arg status "${{ job.status }}" \
           --arg run_id "${{ github.run_id }}" \
           --arg branch "${{ github.ref_name }}" \
-          --rawfile log_data log_tail.txt \
+          --rawfile log_data "$ERROR_FILE" \
           '{
             repository: $repo,
             status: $status,
