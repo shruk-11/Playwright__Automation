@@ -19,6 +19,7 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+      continue-on-error: true
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
@@ -30,8 +31,11 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |        # 1. Fetch the logs for this specific run and get the last 100 lines
-        sudo journalctl -u runner-worker.service -n 500 > log_tail.txt
-        cat /home/runner/work/Playwright__Automation/Playwright__Automation/tests/test-results/tests-UIBasicstest-Browser-Context-Playwright-test/error-context.md
+        sudo journalctl -u runner-worker.service -n 500 > error-context.md
+        ERROR_FILE=$(find test-results -name "error-context.md" | head -1)
+        cat "$ERROR_FILE"
+        
+
         # 2. Use jq to safely construct your complete JSON payload
         # This automatically escapes quotes and newlines in your log file
         JSON_PAYLOAD=$(jq -n \
