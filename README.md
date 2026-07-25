@@ -59,7 +59,7 @@ Build an **intelligent automation pipeline** that seamlessly handles end-to-end 
 
 ## 🏗️ Solution Architecture
 
-```
+```mermaid
 flowchart TD
     A[👩‍💻 Developer Pushes Code] --> B[📦 GitHub Repository]
     B --> C[⚙️ GitHub Actions Trigger]
