@@ -60,26 +60,35 @@ Build an **intelligent automation pipeline** that seamlessly handles end-to-end 
 ## 🏗️ Solution Architecture
 
 ```
-                       👩‍💻 Developer Pushes Code
-                                  │
-                                  ▼
-                         📦 GitHub Repository
-                                  │
-                                  ▼
-                        ⚙️ GitHub Actions Trigger
-                                  │
-                                  ▼
-                      🎭 Playwright Test Execution
-                                 /                                 /                           [Pass] /     \ [Fail]
-                              /                                    ▼         ▼
-                    ✅ Success      🔀 n8n Workflow Triggered
-                                       │
-                                       ├─ 📑 Collect Logs & Screenshots
-                                       ├─ 🤖 AI Root Cause Analysis (OpenAI)
-                                       ├─ 📊 Generate Bug Summary
-                                       │
-                                       ▼
-                             ✉️ Send Email Notification
+flowchart TD
+    A[👩‍💻 Developer Pushes Code] --> B[📦 GitHub Repository]
+    B --> C[⚙️ GitHub Actions Trigger]
+    C --> D[🎭 Playwright Test Execution]
+    
+    D -->|Pass| E[✅ Pipeline Success]
+    D -->|Fail| F[🔀 n8n Workflow Triggered]
+    
+    subgraph N8N [n8n Automation Tasks]
+        direction TB
+        G[📑 Collect Logs & Screenshots]
+        H[🤖 AI Root Cause Analysis - OpenAI]
+        I[📊 Generate Bug Summary]
+        
+        G --> H --> I
+    end
+    
+    F --> N8N
+    N8N --> J[✉️ Send Email Notification]
+
+    %% Styling
+    classDef default fill:#1e1e2e,stroke:#89b4fa,stroke-width:1px,color:#cdd6f4;
+    classDef header fill:#313244,stroke:#f5e0dc,stroke-width:2px,color:#f5e0dc;
+    classDef success fill:#182522,stroke:#a6e3a1,stroke-width:2px,color:#a6e3a1;
+    classDef alert fill:#311b21,stroke:#f38ba8,stroke-width:2px,color:#f38ba8;
+    
+    class A,B,C header;
+    class E success;
+    class F,G,H,I,J alert;
 ```
 
 ---
